@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Product Landing Page with Chatbot</title>
+  <link rel="stylesheet" href="index.css">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    #chat-container, #chat-window { max-width: 600px; margin: 20px auto; padding: 1em; border: 1px solid #ddd; border-radius: 8px; }
+    .message { padding: 8px; margin: 8px 0; border-radius: 4px; }
+    .user { text-align: right; background-color: #e0f7fa; }
+    .bot { background-color: #f1f8e9; }
+    #message-input, #user-input { width: calc(100% - 60px); padding: 10px; }
+    #send-button, button { padding: 10px; }
+    nav ul { list-style: none; padding: 0; }
+    nav ul li { display: inline; margin: 0 15px; }
+    
+    /* New styles for features section */
+    #features {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background-color: #fff;
+        padding: 50px 0;
+    }
+    .feature {
+        text-align: center;
+        cursor: pointer; /* Makes it clickable */
+    }
+    .feature:hover {
+        opacity: 0.8; /* Hover effect */
+    }
+    .feature h3 {
+        margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#chatbot">Chatbot</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <section id="hero">
+    <h1>Empowering Your Financial Journey</h1>
+    <p>>Explore our cutting-edge tools to manage your finances with confidence and ease.</p>
+    <a href="#features" class="cta-button">Get Started</a>
+  </section>
+  
+  <section id="features">
+    <div class="feature-container">
+        <div class="feature" onclick="openChatbot()">
+            <a href="#chatbot"><h3>Chat Bot</h3></a>
+            <p>Interact with our chatbot for instant help!</p>
+        </div>
+        <div class="feature">
+            <h3>Credit Worth Assistant Model</h3>
+            <p>Assess creditworthiness using alternative data for fair financial evaluations.</p>
+        </div>
+        <div class="feature">
+            <h3>Dash Board</h3>
+            <p>Visualize financial insights and track spending patterns in real time.</p>
+        </div>
+        <div class="feature">
+            <h3>Gifts & Rewards</h3>
+            <p>Earn rewards and access exclusive offers for smart financial choices.</p>
+        </div>
+    </div>
+</section>
+
+  
+  
+  <section id="chatbot">
+    <div class="chat-container">
+      <h2>Chat with our Bot</h2>
+      <iframe style="height: 450px; width: 100%;" src="http://localhost:3000/chat"></iframe>
+      <div class="input-container">
+        <input id="message-input" type="text" placeholder="Type your message..." />
+        <button id="send-button">Send</button>
+      </div>
+    </div>
+  </section>
+  
+  <div class="chat-container">
+  <iframe style="height: 450px; width: 100%;" src="http://localhost:3002/chat"></iframe>
+</div>
+
+  <section id="pricing">
+    <h2>Pricing Plans</h2>
+    <div class="pricing-card">
+      <h3>Basic</h3>
+      <p>Starting at $19/month</p>
+      <a href="#" class="cta-button">Choose Plan</a>
+    </div>
+  </section>
+
+
+  <!-- <section id="chatbot" style="display: none;">
+    <h2>Chat with our Bot</h2>
+    <div id="chat-container">
+      <div id="chat-box"></div>
+      <input id="message-input" type="text" placeholder="Type your message..." />
+      <button id="send-button">Send</button>
+    </div>
+  </section> -->
+  
+  <section id="contact">
+    <h2>Contact Us</h2>
+    <form id="contact-form" onsubmit="sendOtp(event)">
+      <input type="text" id="name" placeholder="Your Name" required>
+      <input type="email" id="email" placeholder="Your Email" required>
+      <textarea id="message" placeholder="Your Message" required></textarea>
+      <button type="submit" class="cta-button">Send Message</button>
+    </form>
+  
+    <div id="otp-section" style="display:none;">
+      <input type="text" id="otp" placeholder="Enter OTP" required>
+      <button onclick="verifyOtp()">Verify </button>
+    </div>
+  </section>
+  
+
+  <footer>
+    <p>&copy; 2023 Your Company. All rights reserved.</p>
+  </footer>
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+
+    // Function to open chatbot
+    function openChatbot() {
+      document.getElementById('chatbot').style.display = 'block'; // Show chatbot section
+      document.getElementById('chat-container').scrollIntoView(); // Scroll to chatbot
+    }
+
+    // Function to display messages
+    function displayMessage(content, type) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}`;
+      messageDiv.textContent = content;
+      chatBox.appendChild(messageDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Send message to server
+    async function sendMessage() {
+      const userMessage = messageInput.value;
+      if (!userMessage) return;
+
+      displayMessage(userMessage, 'user');
+      messageInput.value = '';
+
+      try {
+        const response = await fetch('http://localhost:3000/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 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'
+          },
+          body: JSON.stringify({ message: userMessage })
+        });
+        const data = await response.json();
+        displayMessage(data.response, 'bot'); // Display bot response
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
+    }
+
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+  </script>
+</body>
+</html>
