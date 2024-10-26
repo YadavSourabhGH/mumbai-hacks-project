@@ -1,0 +1,69 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Groq Chatbot</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    #chat-container { max-width: 600px; margin: 0 auto; padding: 1em; border: 1px solid #ddd; border-radius: 8px; }
+    .message { padding: 8px; margin: 8px 0; border-radius: 4px; }
+    .user { text-align: right; background-color: #e0f7fa; }
+    .bot { background-color: #f1f8e9; }
+    #message-input { width: calc(100% - 60px); padding: 10px; }
+    #send-button { padding: 10px; }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <div id="chat-box"></div>
+    <input id="message-input" type="text" placeholder="Type your message..." />
+    <button id="send-button">Send</button>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+
+    // Function to display messages
+    function displayMessage(content, type) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}`;
+      messageDiv.textContent = content;
+      chatBox.appendChild(messageDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Send message to server
+    async function sendMessage() {
+      const userMessage = messageInput.value;
+      if (!userMessage) return;
+      
+      displayMessage(userMessage, 'user');
+      messageInput.value = '';
+
+      try {
+// Update this line in the JavaScript to call the correct endpoint
+const response = await fetch('/api/chat', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ message: userMessage })
+});
+
+        const data = await response.json();
+        displayMessage(data.reply, 'bot');
+      } catch (error) {
+        console.error('Error:', error);
+        displayMessage('Failed to communicate with the chatbot.', 'bot');
+      }
+    }
+
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+  </script>
+</body>
+</html>

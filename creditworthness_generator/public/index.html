@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creditworthiness Assessment</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #f0f0f0;
+        }
+        body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+/* 
+.container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+} */
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #555;
+}
+/* 
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+} */
+
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#result {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #333;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Creditworthiness Assessment Form</h1>
+        <form id="userForm">
+            <label for="is_employed">Employment Status:</label>
+            <input type="text" id="is_employed" name="is_employed" required>
+
+            <label for="is_married">Marital Status:</label>
+            <input type="text" id="is_married" name="is_married" required>
+
+            <label for="have_kids">Have Kids? (yes/no):</label>
+            <input type="text" id="have_kids" name="have_kids" required>
+
+            <label for="num_kids">Number of Kids:</label>
+            <input type="number" id="num_kids" name="num_kids">
+
+            <label for="previous_loan">Previous Loan Status:</label>
+            <input type="text" id="previous_loan" name="previous_loan" required>
+
+            <label for="avg_monthly_spending">Average Monthly Spending (₹):</label>
+            <input type="number" id="avg_monthly_spending" name="avg_monthly_spending" required>
+
+            <label for="avg_monthly_saving">Average Monthly Saving (₹):</label>
+            <input type="number" id="avg_monthly_saving" name="avg_monthly_saving" required>
+
+            <label for="avg_monthly_investment">Average Monthly Investment (₹):</label>
+            <input type="number" id="avg_monthly_investment" name="avg_monthly_investment">
+
+            <label for="salary_amount_per_month">Monthly Salary (₹):</label>
+            <input type="number" id="salary_amount_per_month" name="salary_amount_per_month" required>
+
+            <label for="salary_statement_and_list">Salary Statement:</label>
+            <input type="text" id="salary_statement_and_list" name="salary_statement_and_list" required>
+
+            <label for="responsibility_based_payment">Responsibility-Based Payments (₹):</label>
+            <input type="number" id="responsibility_based_payment" name="responsibility_based_payment" required>
+
+            <label for="how_many_member_earn_in_family">Earning Members in Family:</label>
+            <input type="number" id="how_many_member_earn_in_family" name="how_many_member_earn_in_family" required>
+
+            <label for="avg_household_income_1_year">Average Household Income (1 Year) (₹):</label>
+            <input type="number" id="avg_household_income_1_year" name="avg_household_income_1_year" required>
+
+            <button type="submit">Submit</button>
+        </form>
+        <div id="result"></div>
+    </div>
+<script> document.getElementById("userForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    // Collect data from the form
+    const formData = {
+        is_employed: document.getElementById("is_employed").value,
+        is_married: document.getElementById("is_married").value,
+        have_kids: document.getElementById("have_kids").value,
+        num_kids: document.getElementById("num_kids").value || "0",
+        previous_loan: document.getElementById("previous_loan").value,
+        avg_monthly_spending: document.getElementById("avg_monthly_spending").value,
+        avg_monthly_saving: document.getElementById("avg_monthly_saving").value,
+        avg_monthly_investment: document.getElementById("avg_monthly_investment").value,
+        salary_amount_per_month: document.getElementById("salary_amount_per_month").value,
+        salary_statement_and_list: document.getElementById("salary_statement_and_list").value,
+        responsibility_based_payment: document.getElementById("responsibility_based_payment").value,
+        how_many_member_earn_in_family: document.getElementById("how_many_member_earn_in_family").value,
+        avg_household_income_1_year: document.getElementById("avg_household_income_1_year").value
+    };
+
+    // Send data to the backend API
+    try {
+        const response = await fetch("http://localhost:3000/assess", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+        document.getElementById("result").textContent = data.ai_response;
+    } catch (error) {
+        document.getElementById("result").textContent = "Error: Could not connect to the server";
+        console.error("Error:", error);
+    }
+});
+</script>
+
+</body>
+</html>
